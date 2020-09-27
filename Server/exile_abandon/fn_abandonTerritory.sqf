@@ -32,13 +32,16 @@ if(isServer) then
 			_kitMagazine = getText(_filter >> "kitMagazine");
 			_cargoToAdd pushBack _kitMagazine;
 			deleteVehicle _x;
+			
 		} forEach (_tFlag nearObjects["AbstractConstruction",_size]);
+		
 		{
 	    		_type = typeOf _x;
 	    		_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
 			_kitMagazine = getText(_filter >> "kitMagazine");
 			_cargoToAdd pushBack _kitMagazine;
 			deleteVehicle _x;
+			
 		} forEach (_tFlag nearObjects["Exile_Construction_Abstract_Static",_size]);
 
 		if(_cargoToAdd isEqualTo [])then
