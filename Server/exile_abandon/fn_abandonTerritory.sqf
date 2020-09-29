@@ -28,7 +28,6 @@ if(isServer) then
 		
 		{
 	    		_type = typeOf _x;
-			_objectID = _x getVariable ['ExileDatabaseID',-1];
 	    		_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
 			_kitMagazines = getArray(_filter >> "refundObjects");
 			if !((_x getVariable ["ExileAccessCode", -1]) isEqualTo -1) then { _cargoToAdd pushBack "Exile_Item_Codelock"};
