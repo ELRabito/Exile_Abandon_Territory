@@ -14,21 +14,36 @@ if(isServer) then
 		_cargoToAdd = _this select 6;
 		_size = _this select 7;
 		_objectID = _tFlag getVariable ['ExileDatabaseID',-1];
+		_objectCount = count (_tFlag nearObjects["Exile_Construction_Abstract_Static",_size]);
+		
 		if!(_objectID isEqualTo -1)then
 		{
 			format['deleteTerritory:%1', _objectID] call ExileServer_system_database_query_fireAndForget;
 		};
-
-		_crate = "Exile_Container_SupplyBox" createVehicle _location;
-		_crate setVariable ["BIS_enableRandomization",false];
-		clearWeaponCargoGlobal _crate;
-		clearMagazineCargoGlobal _crate;
-		clearBackpackCargoGlobal _crate;
-		clearItemCargoGlobal _crate;
+		
+		if(_objectCount > 0)then
+		{
+		
+			_crate = "Exile_Container_SupplyBox" createVehicle _location;
+			_crate setVariable ["BIS_enableRandomization",false];
+			clearWeaponCargoGlobal _crate;
+			clearMagazineCargoGlobal _crate;
+			clearBackpackCargoGlobal _crate;
+			clearItemCargoGlobal _crate;
+		
+		}
+		else
+		{
+			_holder = createVehicle ['groundWeaponHolder', _location, [], 0, 'CAN_COLLIDE'];
+			_location set[2,(_location select 2) + _add];
+			_holder setPosATL _location;
+			_holder addItemCargoGlobal ['Exile_Item_Flag',1];
+			
+		};
 		
 		{
-	    		_type = typeOf _x;
-	    		_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
+	    	_type = typeOf _x;
+	    	_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
 			_kitMagazines = getArray(_filter >> "refundObjects");
 			if !((_x getVariable ["ExileAccessCode", -1]) isEqualTo -1) then { _cargoToAdd pushBack "Exile_Item_Codelock"};
 			_cargoToAdd append _kitMagazines;
@@ -38,8 +53,8 @@ if(isServer) then
 		} forEach (_tFlag nearObjects["Exile_Construction_Abstract_Static",_size]);
 		
 		{
-	    		_type = typeOf _x;
-	    		_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
+	    	_type = typeOf _x;
+	    	_filter = ('getText(_x >> "staticObject") == _type' configClasses(configfile >> "CfgConstruction")) select 0;
 			_kitMagazine = getText(_filter >> "kitMagazine");
 			_cargoToAdd pushBack _kitMagazine;
 			_x call ExileServer_object_construction_database_delete;
